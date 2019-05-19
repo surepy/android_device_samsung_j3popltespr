@@ -1,41 +1,18 @@
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+# Inherit from those products. Most specific first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# The gps config appropriate for this device
-$(call inherit-product, device/common/gps/gps_us_supl.mk)
+# Inherit some common LineageOS stuff.
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
-$(call inherit-product-if-exists, vendor/samsung/j3popltespr/j3popltespr-vendor.mk)
+# Inherit device configuration
+$(call inherit-product, device/samsung/j3popltespr/device.mk)
 
-DEVICE_PACKAGE_OVERLAYS += device/samsung/j3popltespr/overlay
+# Release name
+PRODUCT_RELEASE_NAME := j3popltespr
 
-
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := device/samsung/j3popltespr/kernel
-else
-	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
-$(call inherit-product, build/target/product/full.mk)
-
-PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
-PRODUCT_AAPT_PREF_CONFIG := xhdpi
-
-PRODUCT_LOCALES += en_US ko_KR ja_JP
-
-PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_j3popltespr
+## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := j3popltespr
-
-PRODUCT_PACKAGES += \
-    fstab.qcom \
-    initlogo.rle \
-    init.bt.rc \
-    init.qcom.rc \
-    init.qcom.usb.rc \
-    init.target.rc \
-    ueventd.rc \
-    init.zygote32.rc \
-    wpa_supplicant_overlay.conf \
-    p2p_supplicant_overlay.conf
+PRODUCT_NAME := lineage_j3popltespr
+PRODUCT_BRAND := samsung
+PRODUCT_MODEL := j3popltespr
+PRODUCT_MANUFACTURER := samsung
