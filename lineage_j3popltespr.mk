@@ -7,6 +7,9 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 # Inherit device configuration
 $(call inherit-product, device/samsung/j3popltespr/device.mk)
 
+# ???
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
+
 # Release name
 PRODUCT_RELEASE_NAME := j3popltespr
 

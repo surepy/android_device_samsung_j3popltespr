@@ -3,9 +3,6 @@ USE_CAMERA_STUB := true
 # inherit from the proprietary version
 -include vendor/samsung/j3popltespr/BoardConfigVendor.mk
 
-BOARD_USES_GENERIC_AUDIO := true
-
-#TARGET_NO_BOOTLOADER := true	does download mode count as bootloader
 #TARGET_NO_RADIOIMAGE := true
 #TARGET_NO_RPC := true
 
@@ -20,15 +17,30 @@ TARGET_BOARD_PLATFORM := msm8937
 BOARD_USES_QCOM_HARDWARE := true
 
 # Architecture
-TARGET_ARCH := arm
 
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
+# Note: we build the platform images for ARMv7-A _without_ NEON.
+#
+# Technically, the emulator supports ARMv7-A _and_ NEON instructions, but
+# emulated NEON code paths typically ends up 2x slower than the normal C code
+# it is supposed to replace (unlike on real devices where it is 2x to 3x
+# faster).
+#
+# What this means is that the platform image will not use NEON code paths
+# that are slower to emulate. On the other hand, it is possible to emulate
+# application code generated with the NDK that uses NEON in the emulator.
+#
+
+TARGET_ARCH := arm64
+TARGET_ARCH_VARIANT := armv8-a
+TARGET_CPU_VARIANT := cortex-a53
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
-TARGET_CPU_VARIANT := cortex-a53
 
 TARGET_CPU_SMP := true
+
+# audio
+HAVE_HTC_AUDIO_DRIVER := true
+BOARD_USES_GENERIC_AUDIO := true
 
 # Kernel
 #BOARD_KERNEL_IMAGE_NAME := zImage-dtb
@@ -51,31 +63,66 @@ BOARD_MKBOOTIMG_ARGS := --base $(BOARD_KERNEL_BASE) --kernel_offset $(BOARD_KERN
 TARGET_USE_MDTP := true
 # lrwxrwxrwx root     root              2016-01-04 05:16 mdtp -> /dev/block/mmcblk0p37
 
-# Shader cache config options
-# Maximum size of the  GLES Shaders that can be cached for reuse.
-# Increase the size if shaders of size greater than 12KB are used.
-# MAX_EGL_CACHE_KEY_SIZE := 12*1024
+# Enable dex-preoptimization to speed up the first boot sequence
+# of an SDK AVD. Note that this operation only works on Linux for now
+ifeq ($(HOST_OS),linux)
+  ifeq ($(WITH_DEXPREOPT),)
+    WITH_DEXPREOPT := true
+  endif
+endif
 
-# Maximum GLES shader cache size for each app to store the compiled shader
-# binaries. Decrease the size if RAM or Flash Storage size is a limitation
-# of the device.
-# MAX_EGL_CACHE_SIZE := 2048*1024
+# Build OpenGLES emulation guest and host libraries
+BUILD_EMULATOR_OPENGL := true
 
-# fix this up by examining /proc/mtd on a running device
+# Build and enable the OpenGL ES View renderer. When running on the emulator,
+# the GLES renderer disables itself if host GL acceleration isn't available.
+USE_OPENGL_RENDERER := true
+
+# Set the phase offset of the system's vsync event relative to the hardware
+# vsync. The system's vsync event drives Choreographer and SurfaceFlinger's
+# rendering. This value is the number of nanoseconds after the hardware vsync
+# that the system vsync event will occur.
+#
+# This phase offset allows adjustment of the minimum latency from application
+# wake-up (by Choregographer) time to the time at which the resulting window
+# image is displayed.  This value may be either positive (after the HW vsync)
+# or negative (before the HW vsync).  Setting it to 0 will result in a
+# minimum latency of two vsync periods because the app and SurfaceFlinger
+# will run just after the HW vsync.  Setting it to a positive number will
+# result in the minimum latency being:
+#
+#     (2 * VSYNC_PERIOD - (vsyncPhaseOffsetNs % VSYNC_PERIOD))
+#
+# Note that reducing this latency makes it more likely for the applications
+# to not have their window content image ready in time.  When this happens
+# the latency will end up being an additional vsync period, and animations
+# will hiccup.  Therefore, this latency should be tuned somewhat
+# conservatively (or at least with awareness of the trade-off being made).
+VSYNC_EVENT_PHASE_OFFSET_NS := 0
+
+# Partitions
+BOARD_FLASH_BLOCK_SIZE := 512
+
+# fix these two, most likely wrong.
 BOARD_BOOTIMAGE_PARTITION_SIZE := 134217728 # 32768 x 4096
-
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 134217728 # same as above
 
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 14696841216 # 3588096 x 4096
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 576716800
+
+BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 
 TARGET_USERIMAGES_USE_EXT4 := true
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 45612974080 # 11135980 x 4096
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 576716800
 
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 134217728 # 32768 x 4096
 
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_CACHEIMAGE_PARTITION_SIZE := 1258291200 # 307200 x 4096
+BOARD_CACHEIMAGE_PARTITION_SIZE := 69206016
+
+BOARD_FLASH_BLOCK_SIZE := 512
+
+TARGET_USERIMAGES_SPARSE_EXT_DISABLED := true
 
 #TARGET_KERNEL_SOURCE := kernel/samsung/j3popltespr
 #TARGET_KERNEL_CONFIG := msm8937_sec_defconfig
@@ -86,6 +133,10 @@ TARGET_PREBUILT_KERNEL := device/samsung/j3popltespr/kernel
 
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
 
-#BOARD_SEPOLICY_DIRS += device/samsung/j3popltespr/sepolicy
+BOARD_SEPOLICY_DIRS += device/samsung/j3popltespr/sepolicy
 
-#BOARD_HAS_NO_SELECT_BUTTON := true
+ifeq ($(TARGET_PRODUCT),sdk)
+  # include an expanded selection of fonts for the SDK.
+  EXTENDED_FONT_FOOTPRINT := true
+endif
+
