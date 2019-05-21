@@ -7,7 +7,7 @@ $(call inherit-product-if-exists, vendor/samsung/j3popltespr/j3popltespr-vendor.
 
 $(call inherit-product, build/target/product/full.mk)
 
-DEVICE_PACKAGE_OVERLAYS += device/samsung/j3popltespr/overlay
+#DEVICE_PACKAGE_OVERLAYS += device/samsung/j3popltespr/overlay
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 	LOCAL_KERNEL := device/samsung/j3popltespr/kernel
@@ -27,17 +27,20 @@ PRODUCT_LOCALES += en_US ko_KR ja_JP
 TARGET_SCREEN_HEIGHT := 1280
 TARGET_SCREEN_WIDTH := 720
 
-PRODUCT_PACKAGES += \
-    fstab.qcom \
-    initlogo.rle \
-    init.bt.rc \
-    init.qcom.rc \
-    init.qcom.usb.rc \
-    init.target.rc \
-    ueventd.rc \
-    init.zygote32.rc \
-    wpa_supplicant_overlay.conf \
-    p2p_supplicant_overlay.conf
+# Ramdisk
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/fstab.qcom:root/fstab.qcom \
+    $(LOCAL_PATH)/rootdir/init.qcom.sensors.sh:root/init.qcom.sensors.sh \
+    $(LOCAL_PATH)/rootdir/init.qcom.class_core.sh:root/init.qcom.class_core.sh \
+    $(LOCAL_PATH)/rootdir/init.qcom.early_boot.sh:root/init.qcom.early_boot.sh \
+    $(LOCAL_PATH)/rootdir/init.qcom.factory.rc:root/init.qcom.factory.rc \
+    $(LOCAL_PATH)/rootdir/init.qcom.rc:root/init.qcom.rc \
+    $(LOCAL_PATH)/rootdir/init.qcom.sh:root/init.qcom.sh \
+    $(LOCAL_PATH)/rootdir/init.qcom.usb.rc:root/init.qcom.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.qcom.usb.sh:root/init.qcom.usb.sh \
+    $(LOCAL_PATH)/rootdir/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
+    $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc
+
 
 # pasted
 PRODUCT_PACKAGES += \
@@ -116,3 +119,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 		libpcmnb \
 		libevs_float
+
+PRODUCT_PACKAGES += \
+		libmemalloc

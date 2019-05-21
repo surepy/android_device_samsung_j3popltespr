@@ -7,14 +7,15 @@ USE_CAMERA_STUB := true
 #TARGET_NO_RPC := true
 
 # Bootloader
-TARGET_NO_BOOTLOADER := true
+#TARGET_NO_BOOTLOADER := true
 TARGET_BOOTLOADER_BOARD_NAME := msm8937
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8937
 
 # Qualcomm support
-BOARD_USES_QCOM_HARDWARE := true
+#BOARD_USES_QCOM_HARDWARE := true
+#TARGET_USES_QCOM_BSP := true
 
 # Architecture
 
@@ -30,7 +31,8 @@ BOARD_USES_QCOM_HARDWARE := true
 # application code generated with the NDK that uses NEON in the emulator.
 #
 
-TARGET_ARCH := arm64
+TARGET_ARCH := arm
+# TARGET_ARCH := arm64 <- fails
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_VARIANT := cortex-a53
 TARGET_CPU_ABI := armeabi-v7a
@@ -43,36 +45,58 @@ HAVE_HTC_AUDIO_DRIVER := true
 BOARD_USES_GENERIC_AUDIO := true
 
 # Kernel
-#BOARD_KERNEL_IMAGE_NAME := zImage-dtb
+BOARD_KERNEL_IMAGE_NAME := zImage #-dtb
 BOARD_KERNEL_SEPARATED_DT := true
 
-BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci
+BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom 
+BOARD_KERNEL_CMDLINE += user_debug=23 msm_rtb.filter=0x237 ehci-hcd.park=3 
+BOARD_KERNEL_CMDLINE += androidboot.bootdevice=7824900.sdhci
 BOARD_KERNEL_BASE := 0x80000000 
 BOARD_KERNEL_OFFSET := 0x00008000
 BOARD_KERNEL_PAGESIZE := 2048
 
 BOARD_RAMDISK_OFFSET := 0x02000000
-BOARD_SECOND_OFFSET := 0x00f00000
+#BOARD_SECOND_OFFSET := 0x00f00000
 BOARD_KERNEL_TAGS_OFFSET := 0x01e00000
+
+TARGET_KERNEL_SOURCE := kernel/samsung/j3popltespr
+TARGET_KERNEL_CONFIG := msm8937_sec_defconfig
+TARGET_KERNEL_VARIANT_CONFIG := msm8937_sec_j3poplte_usa_spr_defconfig
+TARGET_KERNEL_SELINUX_CONFIG := selinux_defconfig
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
+
+
+#TARGET_PREBUILT_KERNEL := device/samsung/j3popltespr/kernel
 
 #BOARD_FLASH_BLOCK_SIZE := 4096 #131072
 
-BOARD_MKBOOTIMG_ARGS := --base $(BOARD_KERNEL_BASE) --kernel_offset $(BOARD_KERNEL_OFFSET) --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $(BOARD_KERNEL_TAGS_OFFSET) --pagesize $(BOARD_KERNEL_PAGESIZE) 
-#--dt out/target/product/j3popltespr/dt.img
+BOARD_MKBOOTIMG_ARGS := --base $(BOARD_KERNEL_BASE) --kernel_offset $(BOARD_KERNEL_OFFSET) 
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $(BOARD_KERNEL_TAGS_OFFSET) 
 
 TARGET_USE_MDTP := true
 # lrwxrwxrwx root     root              2016-01-04 05:16 mdtp -> /dev/block/mmcblk0p37
 
-# Enable dex-preoptimization to speed up the first boot sequence
-# of an SDK AVD. Note that this operation only works on Linux for now
+# Dexpreopt
+# Enable dex-preoptimization to speed up first boot sequence
 ifeq ($(HOST_OS),linux)
-  ifeq ($(WITH_DEXPREOPT),)
-    WITH_DEXPREOPT := true
+  ifneq ($(TARGET_BUILD_VARIANT),eng)
+    ifeq ($(WITH_DEXPREOPT),)
+      DONT_DEXPREOPT_PREBUILTS := true
+      WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := false
+      WITH_DEXPREOPT := true
+    endif
   endif
 endif
 
-# Build OpenGLES emulation guest and host libraries
-BUILD_EMULATOR_OPENGL := true
+# EGL
+# Maximum GLES shader cache size for each app to store the compiled shader
+# binaries. Decrease the size if RAM or Flash Storage size is a limitation
+# of the device.
+MAX_EGL_CACHE_SIZE := 2048*1024
+# Shader cache config options
+# Maximum size of the  GLES Shaders that can be cached for reuse.
+# Increase the size if shaders of size greater than 12KB are used.
+MAX_EGL_CACHE_KEY_SIZE := 12*1024
 
 # Build and enable the OpenGL ES View renderer. When running on the emulator,
 # the GLES renderer disables itself if host GL acceleration isn't available.
@@ -118,20 +142,11 @@ BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 134217728 # 32768 x 4096
 
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_CACHEIMAGE_PARTITION_SIZE := 69206016
+BOARD_CACHEIMAGE_PARTITION_SIZE := 69206016 # 307200 x 
 
 BOARD_FLASH_BLOCK_SIZE := 512
 
 TARGET_USERIMAGES_SPARSE_EXT_DISABLED := true
-
-#TARGET_KERNEL_SOURCE := kernel/samsung/j3popltespr
-#TARGET_KERNEL_CONFIG := msm8937_sec_defconfig
-#TARGET_KERNEL_VARIANT_CONFIG := msm8937_sec_j3poplte_usa_spr_defconfig
-#TARGET_KERNEL_SELINUX_CONFIG := selinux_defconfig
-
-TARGET_PREBUILT_KERNEL := device/samsung/j3popltespr/kernel
-
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
 
 BOARD_SEPOLICY_DIRS += device/samsung/j3popltespr/sepolicy
 
@@ -140,3 +155,4 @@ ifeq ($(TARGET_PRODUCT),sdk)
   EXTENDED_FONT_FOOTPRINT := true
 endif
 
+-include vendor/samsung/j3popltespr/BoardConfigVendor.mk
