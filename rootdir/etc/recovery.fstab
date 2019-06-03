@@ -5,7 +5,7 @@
 /dev/block/mmcblk1p1                       /sdcard         vfat            defaults              defaults
 /dev/block/bootdevice/by-name/boot         /boot           emmc            defaults              defaults
 /dev/block/bootdevice/by-name/recovery     /recovery       emmc            defaults              defaults
-/dev/block/bootdevice/by-name/misc         /misc           emmc            defaults              defaults
+#/dev/block/bootdevice/by-name/misc         /misc           emmc            defaults              defaults
 #/dev/block/bootdevice/by-name/efs          /efs            ext4            default              defaults
 #/dev/block/bootdevice/by-name/carrier      /carrier        ext4            default              defaults
 
