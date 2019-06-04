@@ -1,0 +1,5 @@
+ok takes notes of
+https://github.com/vampirefo/android_device_blu_p6601/blob/db473850e4dd9a456485aae3d204242ae7fc2968/proprietary-files.txt
+
+
+and also i think everything in /system/lib/hw you copy over idk

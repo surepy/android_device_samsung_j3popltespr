@@ -167,33 +167,3 @@ ro.emmc_size=16GB
 ro.config.dha_adj_cached_factor=true
 ro.config.pre_max_kill_enable=true
 
-#
-# ADDITIONAL_DEFAULT_PROPERTIES
-#
-rild.libpath=/system/lib/libsec-ril.so
-persist.cne.feature=0
-persist.radio.lte_vrte_ltd=1
-persist.radio.apm_sim_not_pwdn=1
-persist.radio.add_power_save=1
-persist.data.netmgrd.qos.enable=false
-persist.data.mode=concurrent
-persist.data.dpm.enable=true
-persist.data.dropssdp=false
-persist.data.ibfc.enable=true
-persist.radio.snapshot_enabled=1
-persist.radio.snapshot_timer=22
-persist.eons.enabled=true
-telephony.lteOnCdmaDevice=1
-persist.security.ams.enforcing=3
-ro.secure=0
-ro.allow.mock.location=0
-ro.debuggable=1
-ro.adb.secure=0
-ro.zygote=zygote32
-dalvik.vm.image-dex2oat-Xms=64m
-dalvik.vm.image-dex2oat-Xmx=64m
-dalvik.vm.dex2oat-Xms=64m
-dalvik.vm.dex2oat-Xmx=512m
-ro.dalvik.vm.native.bridge=0
-debug.atrace.tags.enableflags=0
-persist.sys.usb.config=mtp

@@ -8,7 +8,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 $(call inherit-product, device/samsung/j3popltespr/device_j3popltespr.mk)
 
 # ???
-#$(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
 
 # Release name
 PRODUCT_RELEASE_NAME := j3popltespr

@@ -1,0 +1,67 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# IMPORTANT: Do not create world writable files or directories.
+# This is a common source of Android security bugs.
+#
+
+import /init.fac.rc
+
+on init
+#carrier
+    mkdir /carrier 0771 system system
+
+on post-fs-data
+
+on early-boot
+
+on fs
+
+#carrier
+    wait /dev/block/bootdevice/by-name/carrier
+    check_fs /dev/block/bootdevice/by-name/carrier ext4
+    mount ext4 /dev/block/bootdevice/by-name/carrier /carrier nosuid nodev barrier=1
+    chown system system /carrier
+    chmod 0771 /carrier
+
+
+on boot
+
+# permission for Input Device(Touchkey).
+    chown radio system /sys/class/sec/sec_touchkey/touch_sensitivity
+    chown radio system /sys/class/sec/sec_touchkey/touchkey_firm_update
+    chown system radio /sys/class/sec/sec_touchkey/glove_mode
+
+# SSWAP
+    write /proc/sys/vm/swappiness 130
+
+
+# remove resampling
+    setprop ro.input.noresample 1
+
+    # Permissions for svc led
+    chown system system /sys/class/sec/led/led_r
+    chown system system /sys/class/sec/led/led_g
+    chown system system /sys/class/sec/led/led_b
+    chown system system /sys/class/sec/led/led_pattern
+    chown system system /sys/class/sec/led/led_blink
+    chown system system /sys/class/sec/led/led_lowpower
+
+# Create carrier folder for HiddenMenu
+on post-fs
+    mkdir /efs/carrier system system
+    chmod 0755 /efs/carrier
+
+# IMS stack for IMS
+service imsd /system/bin/imsd
+    class main
+    socket imsd stream 0660 system system
+    user root
+    group system radio net_raw inet net_admin
+
+# SSWAP
+service swapon /sbin/sswap -s
+    class core
+    user root
+    group root
+    seclabel u:r:sswap:s0
+    oneshot

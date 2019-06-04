@@ -44,8 +44,50 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.qcom.usb.rc:root/init.qcom.usb.rc \
     $(LOCAL_PATH)/rootdir/init.qcom.usb.sh:root/init.qcom.usb.sh \
     $(LOCAL_PATH)/rootdir/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
-    $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc
+    $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc \
+    $(LOCAL_PATH)/rootdir/init.carrier.rc:root/init.carrier.rc \
+    $(LOCAL_PATH)/rootdir/init.class_main.sh:root/init.class_main.sh \
+    $(LOCAL_PATH)/rootdir/init.container.rc:root/init.container.rc \
+    $(LOCAL_PATH)/rootdir/init.mdm.sh:root/init.mdm.sh \
+    $(LOCAL_PATH)/rootdir/init.msm.usb.configfs.rc:root/init.msm.usb.configfs.rc \
+    $(LOCAL_PATH)/rootdir/init.rilcarrier.rc:root/init.rilcarrier.rc \
+    $(LOCAL_PATH)/rootdir/init.rilchip.rc:root/init.rilchip.rc \
+    $(LOCAL_PATH)/rootdir/init.rilcommon.rc:root/init.rilcommon.rc \
+    $(LOCAL_PATH)/rootdir/init.rilepdg.rc:root/init.rilepdg.rc \
+    $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
+    $(LOCAL_PATH)/rootdir/init.trace.rc:root/init.trace.rc \
+    $(LOCAL_PATH)/rootdir/init.usb.configfs.rc:root/init.usb.configfs.rc \
+    $(LOCAL_PATH)/rootdir/init.usb.rc:root/init.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.zygote32.rc:root/init.zygote32.rc 
 
+ADDITIONAL_DEFAULT_PROPERTIES += \
+    rild.libpath=/system/lib/libsec-ril.so \
+    persist.cne.feature=0 \
+    persist.radio.lte_vrte_ltd=1 \
+    persist.radio.apm_sim_not_pwdn=1 \
+    persist.radio.add_power_save=1 \
+    persist.data.netmgrd.qos.enable=false \
+    persist.data.mode=concurrent \
+    persist.data.dpm.enable=true \
+    persist.data.dropssdp=false \
+    persist.data.ibfc.enable=true \
+    persist.radio.snapshot_enabled=1 \
+    persist.radio.snapshot_timer=22 \
+    persist.eons.enabled=true \
+    telephony.lteOnCdmaDevice=1 \
+    persist.security.ams.enforcing=3 \
+    ro.secure=0 \
+    ro.allow.mock.location=0 \
+    ro.debuggable=1 \
+    ro.adb.secure=0 \
+    ro.zygote=zygote32 \
+    dalvik.vm.image-dex2oat-Xms=64m \
+    dalvik.vm.image-dex2oat-Xmx=64m \
+    dalvik.vm.dex2oat-Xms=64m \
+    dalvik.vm.dex2oat-Xmx=512m \
+    ro.dalvik.vm.native.bridge=0 \
+    debug.atrace.tags.enableflags=0 \
+    persist.sys.usb.config=mtp 
 
 # pasted
 PRODUCT_PACKAGES += \
