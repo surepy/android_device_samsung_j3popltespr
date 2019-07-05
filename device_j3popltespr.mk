@@ -89,6 +89,16 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     debug.atrace.tags.enableflags=0 \
     persist.sys.usb.config=mtp 
 
+# what am i doing
+# audio
+PRODUCT_PACKAGES += \
+	audio.a2dp.default \
+	audio.usb.default \
+	audio.r_submix.default \
+
+PRODUCT_PACKAGES += \
+	gps.default
+
 # pasted
 PRODUCT_PACKAGES += \
     BasicDreams \
