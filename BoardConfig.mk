@@ -1,4 +1,5 @@
-USE_CAMERA_STUB := true
+# ?
+-include device/samsung/qcom-common/BoardConfigCommon.mk
 
 # inherit from the proprietary version
 -include vendor/samsung/j3popltespr/BoardConfigVendor.mk
@@ -12,48 +13,26 @@ BOARD_HAS_DOWNLOAD_MODE := true
 #TARGET_NO_RPC := true
 
 # Bootloader
-#TARGET_NO_BOOTLOADER := true
-TARGET_BOOTLOADER_BOARD_NAME := msm8937
+TARGET_BOOTLOADER_BOARD_NAME := SPRPI28A000KU
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8937
 
 # Qualcomm support
 BOARD_USES_QCOM_HARDWARE := true
-TARGET_USES_QCOM_BSP := true
+#TARGET_USES_QCOM_BSP := true
 
 # Architecture
-TARGET_ARCH := arm
-TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
+# mostly defined in android_device_samsung_qcom-common/BoardConfigCommon.mk
+#TARGET_ARCH := arm
+#TARGET_ARCH_VARIANT := armv7-a-neon
+#TARGET_CPU_ABI := armeabi-v7a
+#TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_VARIANT := cortex-a53
 
-#TARGET_PREFER_32_BIT := true
-
-# Architecture
-#TARGET_ARCH 	    	:= arm64
-#TARGET_ARCH_VARIANT 	:= armv8-a
-#TARGET_CPU_ABI 		:= arm64-v8a
-#TARGET_CPU_ABI2 	:= armeabi
-#TARGET_CPU_VARIANT 	:= cortex-a53
-
-# Second architecture
-#TARGET_2ND_ARCH 	:= arm
-#TARGET_2ND_ARCH_VARIANT := armv7-a-neon
-#TARGET_2ND_CPU_ABI 	:= armeabi-v7a
-#TARGET_2ND_CPU_ABI2 	:= armeabi
-#TARGET_2ND_CPU_VARIANT 	:= cortex-a53
-
-#TARGET_USE_QCOM_BIONIC_OPTIMIZATION := true
-#TARGET_USES_32_BIT_BINDER := true
-#TARGET_USES_64_BIT_BINDER := true
-#TARGET_SUPPORTS_32_BIT_APPS := true
-#TARGET_SUPPORTS_64_BIT_APPS := false
-
 # audio
-BOARD_USES_GENERIC_AUDIO := true
-HAVE_HTC_AUDIO_DRIVER := true
+#BOARD_USES_GENERIC_AUDIO := true
+#HAVE_HTC_AUDIO_DRIVER := true
 
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := zImage #-dtb
@@ -84,8 +63,7 @@ BOARD_MKBOOTIMG_ARGS := --base $(BOARD_KERNEL_BASE) --kernel_offset $(BOARD_KERN
 BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $(BOARD_KERNEL_TAGS_OFFSET) 
 
 # ? 
-
-TARGET_USE_MDTP := true
+# TARGET_USE_MDTP := true 
 
 # Dexpreopt
 # Enable dex-preoptimization to speed up first boot sequence
@@ -111,7 +89,10 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 
 # Build and enable the OpenGL ES View renderer. When running on the emulator,
 # the GLES renderer disables itself if host GL acceleration isn't available.
-#USE_OPENGL_RENDERER := true
+USE_OPENGL_RENDERER := true
+
+#
+BOARD_EGL_CFG = device/samsung/j3popltespr/egl.cfg
 
 # Set the phase offset of the system's vsync event relative to the hardware
 # vsync. The system's vsync event drives Choreographer and SurfaceFlinger's
@@ -144,18 +125,6 @@ BOARD_RECOVERYIMAGE_PARTITION_SIZE := 33554432 # same as above
 
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3674210304
 
-#BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-
-#TARGET_USERIMAGES_USE_EXT4 := true
-#BOARD_USERDATAIMAGE_PARTITION_SIZE := 11403243520
-
-#BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
-#BOARD_PERSISTIMAGE_PARTITION_SIZE := 33554432 # 8192 x 4096
-
-#BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-#BOARD_CACHEIMAGE_PARTITION_SIZE := 314572800 # 76800 x 4096
-
-#TARGET_USERIMAGES_SPARSE_EXT_DISABLED := true
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
@@ -172,11 +141,11 @@ TARGET_RECOVERY_INITRC := $(PLATFORM_PATH)/rootdir/init.qcom.rc
 TARGET_RECOVERY_FSTAB := $(PLATFORM_PATH)/rootdir/etc/recovery.fstab
 
 # BT definitions for Qualcomm solution
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_QCOM := true
-TARGET_USE_QTI_BT_STACK := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(PLATFORM_COMMON_PATH)/bluetooth
-WCNSS_FILTER_USES_SIBS := true
+#BOARD_HAVE_BLUETOOTH := true
+#BOARD_HAVE_BLUETOOTH_QCOM := true
+#TARGET_USE_QTI_BT_STACK := true
+#BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(PLATFORM_COMMON_PATH)/bluetooth
+#WCNSS_FILTER_USES_SIBS := true
 
 ifeq ($(WITH_TWRP),true)
 -include $(COMMON_PATH)/twrp.mk
